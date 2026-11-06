@@ -1,0 +1,515 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Happy Diwali | Special Surprise</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="background-glow"></div>
+
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Fireworks -->
+    <canvas id="fireworks"></canvas>
+
+    <main class="main-container">
+
+        <div class="top-label">
+            ✨ FESTIVAL OF LIGHTS ✨
+        </div>
+
+        <h1 class="main-title">
+            A Special Surprise
+        </h1>
+
+        <p class="subtitle">
+            Something magical is waiting for you...
+        </p>
+
+        <!-- GIFT BOX -->
+        <div class="gift-area" id="giftArea">
+
+            <div class="gift-shadow"></div>
+
+            <div class="gift-box" id="giftBox">
+
+                <div class="gift-lid" id="giftLid">
+
+                    <div class="lid-ribbon"></div>
+
+                    <div class="bow">
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                </div>
+
+                <div class="gift-body">
+
+                    <div class="body-ribbon"></div>
+
+                    <div class="gift-front-ribbon"></div>
+
+                    <div class="gift-star">✦</div>
+
+                </div>
+
+            </div>
+
+            <div class="gift-sparkles">✨</div>
+
+        </div>
+
+        <button class="open-button" id="openButton">
+            OPEN YOUR GIFT 🎁
+        </button>
+
+        <p class="click-text" id="clickText">
+            Click the gift box to reveal your surprise!
+        </p>
+
+        <!-- DIWALI WISHES -->
+        <section class="wish-content" id="wishContent">
+
+            <div class="wish-diya">🪔</div>
+
+            <div class="wish-small">
+                A FESTIVAL OF LOVE & LIGHT
+            </div>
+
+            <h2>
+                Happy <span>Diwali!</span>
+            </h2>
+
+            <div class="wish-decoration">
+                ✦ ✧ ✦
+            </div>
+
+            <p class="wish-message">
+                May the divine light of Diwali bring happiness,
+                peace, prosperity and endless joy into your life.
+
+                <br><br>
+
+                May your dreams shine brighter than the stars
+                and your life be filled with beautiful moments.
+            </p>
+
+            <div class="wish-emojis">
+                🪔 ✨ 🎆 ✨ 🪔
+            </div>
+
+            <h3>
+                Wishing You a Sparkling Diwali!
+            </h3>
+
+            <!-- REPLAY -->
+            <button class="replay-button" onclick="replayAnimation()">
+                ↻ Replay Surprise
+            </button>
+
+            <!-- SHARE SECTION -->
+            <div class="share-section">
+
+                <h3>Share Happiness ❤️</h3>
+
+                <p>
+                    Spread the light of Diwali with
+                    your friends and family!
+                </p>
+
+                <div class="share-buttons">
+
+                    <button class="whatsapp-btn"
+                        onclick="shareWhatsApp()">
+                        💬 WhatsApp
+                    </button>
+
+                    <button class="copy-btn"
+                        onclick="copyWish()">
+                        📋 Copy Wishes
+                    </button>
+
+                    <button class="native-btn"
+                        onclick="shareNative()">
+                        ↗ Share
+                    </button>
+
+                </div>
+
+                <p id="shareStatus" class="share-status"></p>
+
+            </div>
+
+        </section>
+
+        <footer>
+            MADE WITH ❤️ FOR YOU
+        </footer>
+
+    </main>
+
+
+<script>
+
+// ELEMENTS
+
+const giftBox = document.getElementById("giftBox");
+const openButton = document.getElementById("openButton");
+const clickText = document.getElementById("clickText");
+const wishContent = document.getElementById("wishContent");
+const giftArea = document.getElementById("giftArea");
+
+let opened = false;
+
+
+// OPEN GIFT
+
+function openGift() {
+
+    if (opened) return;
+
+    opened = true;
+
+    giftBox.classList.add("opened");
+
+    openButton.style.display = "none";
+    clickText.style.display = "none";
+
+    setTimeout(() => {
+
+        wishContent.classList.add("show");
+
+        startFireworks();
+
+        createBurst();
+
+    }, 900);
+
+}
+
+openButton.addEventListener("click", openGift);
+giftArea.addEventListener("click", openGift);
+
+
+// FLOATING PARTICLES
+
+const particles = document.getElementById("particles");
+
+for (let i = 0; i < 35; i++) {
+
+    const particle = document.createElement("span");
+
+    particle.className = "particle";
+
+    particle.textContent =
+        Math.random() > 0.5 ? "✦" : "✨";
+
+    particle.style.left =
+        Math.random() * 100 + "%";
+
+    particle.style.animationDuration =
+        (5 + Math.random() * 8) + "s";
+
+    particle.style.animationDelay =
+        Math.random() * 6 + "s";
+
+    particle.style.fontSize =
+        (10 + Math.random() * 16) + "px";
+
+    particles.appendChild(particle);
+
+}
+
+
+// FIREWORKS
+
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+let fireworks = [];
+let animationRunning = false;
+
+function resizeCanvas() {
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+}
+
+resizeCanvas();
+
+window.addEventListener("resize", resizeCanvas);
+
+
+function createFirework(x, y) {
+
+    const colors = [
+        "#ffd700",
+        "#ff5c35",
+        "#ff80ab",
+        "#ffffff",
+        "#ffb347"
+    ];
+
+    const color =
+        colors[Math.floor(Math.random() * colors.length)];
+
+    for (let i = 0; i < 65; i++) {
+
+        const angle = Math.random() * Math.PI * 2;
+
+        const speed = Math.random() * 4 + 1;
+
+        fireworks.push({
+
+            x: x,
+            y: y,
+
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+
+            life: 100,
+            color: color,
+
+            size: Math.random() * 3 + 1
+
+        });
+
+    }
+
+}
+
+
+function startFireworks() {
+
+    if (animationRunning) return;
+
+    animationRunning = true;
+
+    let count = 0;
+
+    function animate() {
+
+        ctx.clearRect(
+            0, 0, canvas.width, canvas.height
+        );
+
+        if (count % 35 === 0) {
+
+            createFirework(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height * 0.6
+            );
+
+        }
+
+        fireworks.forEach((particle, index) => {
+
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+
+            particle.vy += 0.025;
+            particle.life -= 1.5;
+
+            ctx.globalAlpha =
+                Math.max(0, particle.life / 100);
+
+            ctx.fillStyle = particle.color;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                particle.x,
+                particle.y,
+                particle.size,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+            if (particle.life <= 0) {
+
+                fireworks.splice(index, 1);
+
+            }
+
+        });
+
+        ctx.globalAlpha = 1;
+
+        count++;
+
+        if (opened) {
+
+            requestAnimationFrame(animate);
+
+        } else {
+
+            animationRunning = false;
+
+        }
+
+    }
+
+    animate();
+
+}
+
+
+// EXTRA FIREWORKS
+
+function createBurst() {
+
+    for (let i = 0; i < 5; i++) {
+
+        setTimeout(() => {
+
+            createFirework(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height * 0.5
+            );
+
+        }, i * 250);
+
+    }
+
+}
+
+
+// REPLAY ANIMATION
+
+function replayAnimation() {
+
+    opened = false;
+
+    wishContent.classList.remove("show");
+
+    giftBox.classList.remove("opened");
+
+    openButton.style.display = "inline-block";
+
+    clickText.style.display = "block";
+
+    fireworks = [];
+
+    ctx.clearRect(
+        0, 0, canvas.width, canvas.height
+    );
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+// GET DIWALI MESSAGE
+
+function getDiwaliWish() {
+
+    return "🪔 HAPPY DIWALI! 🪔\n\n" +
+
+    "May this festival of lights bring happiness, " +
+    "success, peace and prosperity into your life.\n\n" +
+
+    "✨ Wishing you a sparkling Diwali! ✨\n\n" +
+
+    "🎁 Celebrate happiness and spread love!\n\n" +
+
+    "Visit my Diwali wishes website: " +
+    window.location.href;
+
+}
+
+
+// WHATSAPP SHARE
+
+function shareWhatsApp() {
+
+    const text = encodeURIComponent(getDiwaliWish());
+
+    const url = "https://wa.me/?text=" + text;
+
+    window.open(url, "_blank");
+
+}
+
+
+// COPY WISHES
+
+async function copyWish() {
+
+    try {
+
+        await navigator.clipboard.writeText(
+            getDiwaliWish()
+        );
+
+        document.getElementById("shareStatus").textContent =
+            "🎉 Diwali wishes copied successfully!";
+
+    }
+
+    catch (error) {
+
+        document.getElementById("shareStatus").textContent =
+            "Please allow clipboard access or copy manually.";
+
+    }
+
+}
+
+
+// NATIVE SHARE
+
+async function shareNative() {
+
+    const text = getDiwaliWish();
+
+    if (navigator.share) {
+
+        try {
+
+            await navigator.share({
+
+                title: "Happy Diwali 🪔",
+
+                text: text,
+
+                url: window.location.href
+
+            });
+
+        }
+
+        catch (error) {
+
+            console.log("Sharing cancelled");
+
+        }
+
+    }
+
+    else {
+
+        shareWhatsApp();
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
